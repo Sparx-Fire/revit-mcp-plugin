@@ -10,7 +10,7 @@ revit-mcp-plugin 是一个revit插件，基于 MCP 协议制作，从而使AI可
 
 ## 环境要求
 
-- revit 2019~2024
+- revit 2019~2026
 
 ## 使用方法
 
@@ -48,6 +48,8 @@ revit-mcp-plugin 是一个revit插件，基于 MCP 协议制作，从而使AI可
 ├── 2022/
 ├── 2023/
 ├── 2024/
+├── 2025/
+├── 2026/
 └── command.json                                # 配置文件
 ```
 

@@ -10,7 +10,7 @@ This project is part of the revit-mcp project (receives messages, loads command 
 
 ## Environment Requirements
 
-- Revit 2019~2024
+- Revit 2019~2026
 
 ## Usage Instructions
 
@@ -48,6 +48,8 @@ CommandSetName/
 ├── 2022/
 ├── 2023/
 ├── 2024/
+├── 2025/
+├── 2026/
 └── command.json                         # Configuration file
 ```
 
