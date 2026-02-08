@@ -16,23 +16,32 @@ revit-mcp-plugin 是一个revit插件，基于 MCP 协议制作，从而使AI可
 
 ### 注册插件
 
-注册插件，重启Revit
+项目中包含一个 `.addin` 清单文件，位于 `revit-mcp-plugin/revit-mcp.addin`。此文件告诉 Revit 如何加载插件。注册插件步骤如下：
 
-```
-<?xml version="1.0" encoding="utf-8"?>
-<RevitAddIns>
-  <AddIn Type="Application">
-    <Name>revit-mcp</Name>
-    <Assembly>%your_path%\revit-mcp-plugin.dll</Assembly>
-    <FullClassName>revit_mcp_plugin.Core.Application</FullClassName>
-    <ClientId>090A4C8C-61DC-426D-87DF-E4BAE0F80EC1</ClientId>
-    <VendorId>revit-mcp</VendorId>
-    <VendorDescription>https://github.com/revit-mcp/revit-mcp-plugin</VendorDescription>
-  </AddIn>
-</RevitAddIns>
-```
+1. **编译项目**，生成 `revit-mcp-plugin.dll`。
 
-`%your_path%`需要替换为实际编译后的路径
+2. **复制 `.addin` 文件**（`revit-mcp.addin`）到以下 Revit 插件目录之一，其中 `<version>` 为你的 Revit 版本年份（如 `2024`、`2025`、`2026`）：
+
+   - **所有用户：** `C:\ProgramData\Autodesk\Revit\Addins\<version>\`
+   - **仅当前用户：** `%APPDATA%\Autodesk\Revit\Addins\<version>\`
+
+3. **修改复制后的 `.addin` 文件中的 `<Assembly>` 路径**，指向编译生成的 DLL 完整路径：
+
+   ```xml
+   <?xml version="1.0" encoding="utf-8"?>
+   <RevitAddIns>
+     <AddIn Type="Application">
+       <Name>revit-mcp</Name>
+       <Assembly>C:\your\build\output\path\revit-mcp-plugin.dll</Assembly>
+       <FullClassName>revit_mcp_plugin.Core.Application</FullClassName>
+       <ClientId>090A4C8C-61DC-426D-87DF-E4BAE0F80EC1</ClientId>
+       <VendorId>revit-mcp</VendorId>
+       <VendorDescription>https://github.com/revit-mcp/revit-mcp-plugin</VendorDescription>
+     </AddIn>
+   </RevitAddIns>
+   ```
+
+4. **重启 Revit** 以加载插件。
 
 ### 配置命令
 
@@ -71,6 +80,9 @@ revit-mcp-plugin 是一个revit插件，基于 MCP 协议制作，从而使AI可
 
 ```
 revit-mcp-plugin/
+├── revit-mcp-plugin.csproj                   # C# 项目文件
+├── revit-mcp.addin                           # Revit 插件注册清单
+│
 ├── Configuration/                            # 配置管理相关类
 │   ├── CommandConfig.cs                      # 命令配置
 │   ├── ConfigurationManager.cs               # 配置管理器
@@ -86,13 +98,21 @@ revit-mcp-plugin/
 │   ├── MCPServiceConnection.cs               # MCP服务连接
 │   ├── RevitCommandRegistry.cs               # Revit命令注册
 │   ├── Settings.cs                           # 应用程序设置
-│   └── SocketService.cs                      # Socket服务实现
+│   ├── SocketService.cs                      # Socket服务实现
+│   └── Ressources/                           # 嵌入式资源文件
+│       ├── icon-16.png                       # 插件图标 (16x16)
+│       ├── icon-32.png                       # 插件图标 (32x32)
+│       ├── settings-16.png                   # 设置图标 (16x16)
+│       └── settings-32.png                   # 设置图标 (32x32)
 │
-├── Models/                                   # 数据模型
-│   └── ...                                   # 各种数据模型类
+├── Properties/                               # 程序集元数据
+│   └── AssemblyInfo.cs                       # 程序集信息
 │
 ├── UI/                                       # WPF窗体界面
-│   └── ...                                   # 界面相关类
+│   ├── CommandSetSettingsPage.xaml            # 命令集设置界面布局
+│   ├── CommandSetSettingsPage.xaml.cs         # 命令集设置代码
+│   ├── SettingsWindow.xaml                    # 设置窗口界面布局
+│   └── SettingsWindow.xaml.cs                # 设置窗口代码
 │
 └── Utils/                                    # 工具类
     ├── Logger.cs                             # 日志工具
@@ -119,12 +139,16 @@ revit-mcp-plugin/
 - RevitCommandRegistry.cs: 注册和管理可用的Revit命令
 - Settings.cs: 触发显示设置界面
 - SocketService.cs: 实现与外部客户端的Socket通信
+- Ressources/: 包含插件功能区按钮的嵌入式图标资源
 
-### Models 目录
-包含数据模型类，用于在系统各部分之间传递数据。
+### Properties 目录
+包含程序集级别的元数据（AssemblyInfo.cs）。
 
 ### UI 目录
-包含插件的用户界面相关组件，使用WPF框架实现。
+包含插件的用户界面相关组件，使用WPF框架实现：
+
+- CommandSetSettingsPage.xaml/.cs: 命令集配置设置页面
+- SettingsWindow.xaml/.cs: 主设置窗口
 
 ### Utils 目录
 提供各种辅助工具：

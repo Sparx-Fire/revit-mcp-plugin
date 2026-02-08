@@ -16,23 +16,32 @@ This project is part of the revit-mcp project (receives messages, loads command 
 
 ### Register Plugin
 
-Register the plugin and restart Revit:
+A `.addin` manifest file is included in the project at `revit-mcp-plugin/revit-mcp.addin`. This file tells Revit how to load the plugin. To register the plugin:
 
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<RevitAddIns>
-  <AddIn Type="Application">
-    <Name>revit-mcp</Name>
-    <Assembly>%your_path%\revit-mcp-plugin.dll</Assembly>
-    <FullClassName>revit_mcp_plugin.Core.Application</FullClassName>
-    <ClientId>090A4C8C-61DC-426D-87DF-E4BAE0F80EC1</ClientId>
-    <VendorId>revit-mcp</VendorId>
-    <VendorDescription>https://github.com/revit-mcp/revit-mcp-plugin</VendorDescription>
-  </AddIn>
-</RevitAddIns>
-```
+1. **Build the project** to produce `revit-mcp-plugin.dll`.
 
-`%your_path%` needs to be replaced with the actual path after compilation.
+2. **Copy the `.addin` file** (`revit-mcp.addin`) to one of the following Revit add-in directories, where `<version>` is your Revit version year (e.g., `2024`, `2025`, `2026`):
+
+   - **All users:** `C:\ProgramData\Autodesk\Revit\Addins\<version>\`
+   - **Current user only:** `%APPDATA%\Autodesk\Revit\Addins\<version>\`
+
+3. **Edit the `<Assembly>` path** inside the copied `.addin` file to point to the full path of your compiled DLL:
+
+   ```xml
+   <?xml version="1.0" encoding="utf-8"?>
+   <RevitAddIns>
+     <AddIn Type="Application">
+       <Name>revit-mcp</Name>
+       <Assembly>C:\your\build\output\path\revit-mcp-plugin.dll</Assembly>
+       <FullClassName>revit_mcp_plugin.Core.Application</FullClassName>
+       <ClientId>090A4C8C-61DC-426D-87DF-E4BAE0F80EC1</ClientId>
+       <VendorId>revit-mcp</VendorId>
+       <VendorDescription>https://github.com/revit-mcp/revit-mcp-plugin</VendorDescription>
+     </AddIn>
+   </RevitAddIns>
+   ```
+
+4. **Restart Revit** for the plugin to be loaded.
 
 ### Configure Commands
 
@@ -71,6 +80,9 @@ You can refer to the [revit-mcp-commandset](https://github.com/revit-mcp/revit-m
 
 ```
 revit-mcp-plugin/
+├── revit-mcp-plugin.csproj                   # C# project file
+├── revit-mcp.addin                           # Revit plugin registration manifest
+│
 ├── Configuration/                            # Configuration management related classes
 │   ├── CommandConfig.cs                      # Command configuration
 │   ├── ConfigurationManager.cs               # Configuration manager
@@ -86,13 +98,21 @@ revit-mcp-plugin/
 │   ├── MCPServiceConnection.cs               # MCP service connection
 │   ├── RevitCommandRegistry.cs               # Revit command registration
 │   ├── Settings.cs                           # Application settings
-│   └── SocketService.cs                      # Socket service implementation
+│   ├── SocketService.cs                      # Socket service implementation
+│   └── Ressources/                           # Embedded resource assets
+│       ├── icon-16.png                       # Plugin icon (16x16)
+│       ├── icon-32.png                       # Plugin icon (32x32)
+│       ├── settings-16.png                   # Settings icon (16x16)
+│       └── settings-32.png                   # Settings icon (32x32)
 │
-├── Models/                                   # Data models
-│   └── ...                                   # Various data model classes
+├── Properties/                               # Assembly metadata
+│   └── AssemblyInfo.cs                       # Assembly information
 │
 ├── UI/                                       # WPF form interfaces
-│   └── ...                                   # Interface related classes
+│   ├── CommandSetSettingsPage.xaml            # Command set settings UI layout
+│   ├── CommandSetSettingsPage.xaml.cs         # Command set settings code-behind
+│   ├── SettingsWindow.xaml                    # Settings window UI layout
+│   └── SettingsWindow.xaml.cs                # Settings window code-behind
 │
 └── Utils/                                    # Utility classes
     ├── Logger.cs                             # Logging utility
@@ -119,12 +139,16 @@ Contains the core functionality and entry point of the plugin:
 - RevitCommandRegistry.cs: Registers and manages available Revit commands
 - Settings.cs: Triggers the display of the settings interface
 - SocketService.cs: Implements Socket communication with external clients
+- Ressources/: Contains embedded icon assets for the plugin ribbon buttons
 
-### Models Directory
-Contains data model classes used to pass data between different parts of the system.
+### Properties Directory
+Contains assembly-level metadata (AssemblyInfo.cs).
 
 ### UI Directory
-Contains user interface related components of the plugin, implemented using the WPF framework.
+Contains user interface components implemented using the WPF framework:
+
+- CommandSetSettingsPage.xaml/.cs: Settings page for configuring command sets
+- SettingsWindow.xaml/.cs: Main settings window
 
 ### Utils Directory
 Provides various auxiliary tools:
