@@ -10,7 +10,7 @@ This project is part of the revit-mcp project (receives messages, loads command 
 
 ## Environment Requirements
 
-- Revit 2019~2026
+- Revit 2020~2026
 
 ## Usage Instructions
 
@@ -42,8 +42,7 @@ This interface is used to configure the commands to be loaded into Revit. Click 
 
 ```
 CommandSetName/
-├── 2019/                                # Compatible executable files for different versions
-├── 2020/
+├── 2020/                                # Compatible executable files for different versions
 ├── 2021/
 ├── 2022/
 ├── 2023/
